@@ -31,11 +31,10 @@ from random import randrange
 #######################################################
 
 
-
+##
 data_YTM = pd.read_csv("..\\data\\financial data (.csv project).csv")
+##
 
-
-y1 = data_YTM['y1']
 y3 = data_YTM['y3']
 
 #y1.index = pd.Index(sm.tsa.datetools.dates_from_range())
@@ -57,7 +56,7 @@ plot_pacf(dy3, lags = 20).show()  # 1阶差分后的pacf图
 #print( 'AIC', train_results.aic_min_order)  #(5,4)
 #print( 'BIC', train_results.bic_min_order)  #(1,0)
 ##############
-model3 = ARMA(dy3, order = (5,4)) #设定模型阶数
+model3 = ARMA(dy3, order = (2,4)) #设定模型阶数
 
 result3 = model3.fit(disp = 0)  #拟合
 
@@ -69,7 +68,6 @@ fore3 = result3.forecast(5)[0]   #后五期的预测
 from sklearn.metrics import mean_squared_error
 
 mse3 = mean_squared_error(dy3,pred3)  # 均方误差
-
 
 
 
@@ -92,7 +90,7 @@ dy3_r5 = dy3_r5.dropna()  ##抓取空值
 #################
 
 
-model3_r5 = ARMA(dy3_r5, order = (5,4))
+model3_r5 = ARMA(dy3_r5, order = (1,1))
 
 result3_r5 = model3_r5.fit()
 
@@ -100,17 +98,118 @@ pred3_r5 = result3_r5.predict()   #原始一阶差分模型估计值
 
 mse3_r5 = mean_squared_error(dy3_r5,pred3_r5)
 
-fore3_r5 = result3.forecast(5)[0]
+fore3_r5 = result3.forecast(5)[0]#+mse3_r5
 
 
-#
-mse = mean_squared_error(dy3[(len(dy3)-5):len(dy3)] , fore3_r5)   ##去掉前的5项原一阶差分值与去掉后的预测值的 均方误差
+####try
+list1 = []
+m = y3[1951]
+for i in range(5):
+    m = m + fore3_r5[i]
+    list1.append(m)
+    
+y_hat = pd.DataFrame(list1)
+
+mse3_nd = mean_squared_error(y3[1952:1957],y_hat)
+#####
+
+
+######
+mse_3 = mean_squared_error(dy3[(len(dy3)-5):len(dy3)] , fore3_r5)   ##去掉前的5项原一阶差分值与去掉后的预测值的 均方误差
+######
+
+
+##
+
+fore3_r5 = pd.DataFrame(fore3_r5)
+df_new = pd.concat([pred3_r5,fore3_r5],ignore_index=True)
+
+mse_ = mean_squared_error(dy3,df_new)
+##
+
+help(ARMA.fit)
 
 
 
 
 
 
+
+
+#####################################################
+
+y1 = data_YTM['y1']
+
+y1.plot()  #原数据时间序列图
+
+dy1 = y1.diff(1)    #将y1进行1阶差分
+
+dy1 = dy1.dropna()  ##去空值
+
+dy1.plot(figsize = (9,5))   #1阶差分后的时间序列图
+
+plot_acf(dy1,lags = 20).show()  #1阶差分后的acf图
+
+plot_pacf(dy1, lags = 20).show()  # 1阶差分后的pacf图
+
+###########需要运算时间，可跳过改步骤，结果已经给出
+#train_results = sm.tsa.arma_order_select_ic(dy1, ic=[ 'aic', 'bic'], trend= 'nc', max_ar= 6, max_ma= 6)   ## p、q的最优值
+#print( 'AIC', train_results.aic_min_order)  #(5,5)
+#print( 'BIC', train_results.bic_min_order)  #(3,2)
+##############
+model1 = ARMA(dy1, order = (3,2)) #设定模型阶数
+
+result1 = model1.fit(disp = 0)  #拟合
+
+pred1 = result1.predict()   #训练数据的估计
+
+fore1 = result1.forecast(5)[0]   #后五期的预测
+
+
+from sklearn.metrics import mean_squared_error
+
+mse1 = mean_squared_error(dy1,pred1)  # 均方误差
+
+
+###################
+
+
+y1_r5 = data_YTM['y1'].shift(-5)
+
+dy1_r5 = y1_r5.diff(1)    #将y1进行1阶差分
+
+dy1_r5 = dy1_r5.dropna()  ##抓取空值
+
+###############同上
+#train_results = sm.tsa.arma_order_select_ic(dy1_r5, ic=[ 'aic', 'bic'], trend= 'nc', max_ar= 7, max_ma= 7)   ## p、q的最优值
+#print( 'AIC', train_results.aic_min_order) #(5,4)
+#print( 'BIC', train_results.bic_min_order) #(3,2)
+#################
+
+
+model1_r5 = ARMA(dy1_r5, order = (3,2))
+
+result1_r5 = model1_r5.fit()
+
+pred1_r5 = result1_r5.predict()   #原始一阶差分模型估计值
+
+mse1_r5 = mean_squared_error(dy1_r5,pred1_r5)
+
+fore1_r5 = result1.forecast(5)[0]
+
+
+######
+mse_1 = mean_squared_error(dy3[(len(dy1)-5):len(dy1)] , fore1_r5)   ##去掉前的5项原一阶差分值与去掉后的预测值的 均方误差
+######
+
+
+##
+
+fore3_r5 = pd.DataFrame(fore3_r5)
+df_new = pd.concat([pred3_r5,fore3_r5],ignore_index=True)
+
+mse_ = mean_squared_error(dy3,df_new)
+##
 
 
 
