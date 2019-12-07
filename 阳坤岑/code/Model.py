@@ -95,8 +95,8 @@ for i in range(1,6):#循环5次    每一次调预测i期的model参数使得mse
         if socre < best:#如果的分低则记录参数
             best = socre
             best_j =j    
-        print('i = ',i,'best score = ',best,'j = ',best_j)      
-        socre_list.append(best)
+    print('i = ',i,'best score = ',best,'j = ',best_j)      
+    socre_list.append(best)
 print(np.mean(socre_list))#整体得分
 
 
