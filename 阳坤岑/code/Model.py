@@ -68,7 +68,7 @@ socre_list = []
 
 for i in range(1,6):#循环5次    每一次调预测i期的model参数使得mse最小，即best最小的参数
     best = 100##设置初始best分数
-    for j in range(1,5):
+    for j in range(1,20):
         data_y1,data_y3 = func.pre_deal(j,i)##func.pre_deal函数 进行数据预处理 目的是将数据整理成差分数表 ， j表示数表中X的个数，i表示滞后几期
         func.train_test_split(data_y1,'y1')#func.train_test_split划分测试集和训练集
         func.train_test_split(data_y3,'y3')#func.train_test_split划分测试集和训练集
@@ -90,13 +90,13 @@ for i in range(1,6):#循环5次    每一次调预测i期的model参数使得mse
         
         data = data.drop(index =[i for i in list(range(800,1150))],axis = 0).reset_index(drop=True)   #删除高波动项
         features = [feat for feat in data.columns.values if feat not in ['y']]   #生成features的list
-        t,socre,_ =Liner_Model(data,test,features) #调用模型
+        t,socre,_ =SVR_Model(data,test,features) #调用模型
 
-    if socre < best:#如果的分低则记录参数
-        best = socre
-        best_j =j    
-    print('i = ',i,'best score = ',best,'j = ',best_j)      
-    socre_list.append(best)
+        if socre < best:#如果的分低则记录参数
+            best = socre
+            best_j =j    
+        print('i = ',i,'best score = ',best,'j = ',best_j)      
+        socre_list.append(best)
 print(np.mean(socre_list))#整体得分
 
 
