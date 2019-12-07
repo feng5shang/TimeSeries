@@ -67,8 +67,10 @@ LSTM_Model(data,test,features)
 socre_list = []
 
 for i in range(1,6):#循环5次    每一次调预测i期的model参数使得mse最小，即best最小的参数
+    #i = 1
     best = 100##设置初始best分数
     for j in range(1,5):
+        #j = 1
         data_y1,data_y3 = func.pre_deal(j,i)##func.pre_deal函数 进行数据预处理 目的是将数据整理成差分数表 ， j表示数表中X的个数，i表示滞后几期
         func.train_test_split(data_y1,'y1')#func.train_test_split划分测试集和训练集
         func.train_test_split(data_y3,'y3')#func.train_test_split划分测试集和训练集
@@ -80,8 +82,9 @@ for i in range(1,6):#循环5次    每一次调预测i期的model参数使得mse
         temp_test = pd.read_csv('../data/data_y1_test.csv')#读取 ||辅助|| 测试数据
         ########################### 需要你构建特征进行测试
 #        举个例子
-#        data['Z1'] = temp_data['X'+str(j)]
-#        test['Z1'] = temp_test['X'+str(j)]
+        data['Z'+str(j)] = temp_data['X'+str(j)]
+
+        test['Z'+str(j)] = temp_test['X'+str(j)]
 #        上诉例子表示用三年期或者一年期的最后一期作为X辅助变量
         
         
