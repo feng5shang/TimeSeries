@@ -96,38 +96,23 @@ result3_r5 = model3_r5.fit()
 
 pred3_r5 = result3_r5.predict()   #原始一阶差分模型估计值
 
-mse3_r5 = mean_squared_error(dy3_r5,pred3_r5)
+mse3_r5 = mean_squared_error(dy3_r5,pred3_r5)   ##你和模型时的估计值
 
-fore3_r5 = result3.forecast(5)[0]#+mse3_r5
+fore3_r5 = result3.forecast(5)[0]           ###后五期的预测值
 
-
+#############
 ####try
-list1 = []
+list_y3_hat = []
 m = y3[1951]
 for i in range(5):
     m = m + fore3_r5[i]
-    list1.append(m)
+    list_y3_hat.append(m)
     
-y_hat = pd.DataFrame(list1)
+y3_hat = pd.DataFrame(list_y3_hat)
 
-mse3_nd = mean_squared_error(y3[1952:1957],y_hat)
+mse3_nd = mean_squared_error(y3[1952:1957],y3_hat)     #后五期值的 均方误差
 #####
-
-
-######
-mse_3 = mean_squared_error(dy3[(len(dy3)-5):len(dy3)] , fore3_r5)   ##去掉前的5项原一阶差分值与去掉后的预测值的 均方误差
-######
-
-
-##
-
-fore3_r5 = pd.DataFrame(fore3_r5)
-df_new = pd.concat([pred3_r5,fore3_r5],ignore_index=True)
-
-mse_ = mean_squared_error(dy3,df_new)
-##
-
-help(ARMA.fit)
+####################
 
 
 
@@ -157,7 +142,7 @@ plot_pacf(dy1, lags = 20).show()  # 1阶差分后的pacf图
 #print( 'AIC', train_results.aic_min_order)  #(5,5)
 #print( 'BIC', train_results.bic_min_order)  #(3,2)
 ##############
-model1 = ARMA(dy1, order = (3,2)) #设定模型阶数
+model1 = ARMA(dy1, order = (1,1)) #设定模型阶数
 
 result1 = model1.fit(disp = 0)  #拟合
 
@@ -171,7 +156,16 @@ from sklearn.metrics import mean_squared_error
 mse1 = mean_squared_error(dy1,pred1)  # 均方误差
 
 
+
+
+
+
 ###################
+
+
+
+
+
 
 
 y1_r5 = data_YTM['y1'].shift(-5)
@@ -187,7 +181,7 @@ dy1_r5 = dy1_r5.dropna()  ##抓取空值
 #################
 
 
-model1_r5 = ARMA(dy1_r5, order = (3,2))
+model1_r5 = ARMA(dy1_r5, order = (1,1))
 
 result1_r5 = model1_r5.fit()
 
@@ -199,11 +193,19 @@ fore1_r5 = result1.forecast(5)[0]
 
 
 ######
-mse_1 = mean_squared_error(dy3[(len(dy1)-5):len(dy1)] , fore1_r5)   ##去掉前的5项原一阶差分值与去掉后的预测值的 均方误差
+###############
+list_y1_hat = []
+m = y1[1951]
+for i in range(5):
+    m = m + fore3_r5[i]
+    list_y1_hat.append(m)
+    
+y1_hat = pd.DataFrame(list_y1_hat)
+
+mse1_nd = mean_squared_error(y1[1952:1957],y1_hat)  ######
+
+#####################
 ######
-
-
-##
 
 fore3_r5 = pd.DataFrame(fore3_r5)
 df_new = pd.concat([pred3_r5,fore3_r5],ignore_index=True)
