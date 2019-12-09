@@ -13,7 +13,7 @@ from keras.models import Sequential
 from keras.layers import LSTM,Dense
 from keras import losses
 from sklearn.svm import SVR
-################################################模型#####################################
+################################################模型####################################
 '''
 模型输入第一个参数是训练集，第二个是测试集，第三个特征名字列表
 
